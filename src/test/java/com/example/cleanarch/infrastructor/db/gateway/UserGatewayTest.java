@@ -69,7 +69,7 @@ class UserGatewayTest {
     }
 
     @Test
-    @DisplayName("should return null if user does not exists.")
+    @DisplayName("should return null if user does not exists on findByEmail.")
     void findByEmailAndReturnNull() {
         UserEntity userEntity = makeUserEntity();
 
@@ -96,6 +96,20 @@ class UserGatewayTest {
         verify(userMapper, times(1)).toEntity(user);
         verify(userRepository, times(1)).findById(userEntity.getId());
         assertEquals(result, userEntity);
+    }
+
+    @Test
+    @DisplayName("should return null if user does not exists on findById.")
+    void findByIdAndReturnNull() {
+        UserEntity userEntity = makeUserEntity();
+
+        when(userRepository.findById(userEntity.getId())).thenReturn(Optional.empty());
+
+        UserEntity result = sut.findById(userEntity.getId());
+
+        verifyNoInteractions(userMapper);
+        verify(userRepository, times(1)).findById(userEntity.getId());
+        assertNull(result);
     }
 
     UserEntity makeUserEntity() {
