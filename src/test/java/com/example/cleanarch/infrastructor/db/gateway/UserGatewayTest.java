@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 
@@ -61,6 +62,20 @@ class UserGatewayTest {
         verify(userMapper, times(1)).toEntity(user);
         verify(userRepository, times(1)).findByEmail(userEntity.getEmail());
         assertEquals(result, userEntity);
+    }
+
+    @Test
+    @DisplayName("should return null if user does not exists.")
+    void findByEmailAndReturnNull() {
+        UserEntity userEntity = makeUserEntity();
+
+        when(userRepository.findByEmail(userEntity.getEmail())).thenReturn(null);
+
+        UserEntity result = sut.findByEmail(userEntity.getEmail());
+
+        verifyNoInteractions(userMapper);
+        verify(userRepository, times(1)).findByEmail(userEntity.getEmail());
+        assertNull(result);
     }
 
     @Test
