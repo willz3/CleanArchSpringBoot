@@ -48,7 +48,19 @@ class UserGatewayTest {
     }
 
     @Test
+    @DisplayName("should find an user by email and return it as entity.")
     void findByEmail() {
+        UserEntity userEntity = makeUserEntity();
+        User user = makeUser();
+
+        when(userRepository.findByEmail(userEntity.getEmail())).thenReturn(user);
+        when(userMapper.toEntity(user)).thenReturn(userEntity);
+
+        UserEntity result = sut.findByEmail(userEntity.getEmail());
+
+        verify(userMapper, times(1)).toEntity(user);
+        verify(userRepository, times(1)).findByEmail(userEntity.getEmail());
+        assertEquals(result, userEntity);
     }
 
     @Test
