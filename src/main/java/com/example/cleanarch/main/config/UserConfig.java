@@ -5,8 +5,8 @@ import com.example.cleanarch.data.protocols.gateway.user.IFindUserByEmailGateway
 import com.example.cleanarch.data.protocols.gateway.user.IGetUserByIdGateway;
 import com.example.cleanarch.data.usecase.CreateUserUseCase;
 import com.example.cleanarch.data.usecase.GetUserByIdUseCase;
-import com.example.cleanarch.infrastructor.controller.user.mapper.CreateUserDTOMapper;
-import com.example.cleanarch.infrastructor.controller.user.mapper.GetUserByIdDTOMapper;
+import com.example.cleanarch.infrastructor.controller.user.v1.mapper.CreateUserDTOMapper;
+import com.example.cleanarch.infrastructor.controller.user.v1.mapper.GetUserByIdDTOMapper;
 import com.example.cleanarch.infrastructor.db.gateway.UserGateway;
 import com.example.cleanarch.infrastructor.db.mapper.UserMapper;
 import com.example.cleanarch.infrastructor.db.persistence.jpa.IUserJpaRepository;

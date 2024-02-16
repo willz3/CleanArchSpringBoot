@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
 public class UserGateway implements ICreateUserGateway, IFindUserByEmailGateway, IGetUserByIdGateway {
 
     private final IUserJpaRepository userRepository;

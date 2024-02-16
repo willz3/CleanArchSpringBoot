@@ -1,8 +1,7 @@
-package com.example.cleanarch.infrastructor.controller.user.mapper;
+package com.example.cleanarch.infrastructor.controller.user.v1.mapper;
 
 import com.example.cleanarch.domain.entity.UserEntity;
-import com.example.cleanarch.infrastructor.controller.user.request.CreateUserRequest;
-import com.example.cleanarch.infrastructor.controller.user.response.GetUserByIdResponse;
+import com.example.cleanarch.infrastructor.controller.user.v1.response.GetUserByIdResponse;
 
 public class GetUserByIdDTOMapper {
     public GetUserByIdResponse toResponse(UserEntity entity) {

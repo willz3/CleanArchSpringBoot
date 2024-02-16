@@ -1,9 +1,9 @@
-package com.example.cleanarch.infrastructor.controller.user;
+package com.example.cleanarch.infrastructor.controller.user.v1;
 
 import com.example.cleanarch.core.shared.logic.Either;
 import com.example.cleanarch.domain.entity.UserEntity;
 import com.example.cleanarch.domain.usecase.IGetUserByIdUseCase;
-import com.example.cleanarch.infrastructor.controller.user.mapper.GetUserByIdDTOMapper;
+import com.example.cleanarch.infrastructor.controller.user.v1.mapper.GetUserByIdDTOMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public class GetUserByIdController {
         this.getUserByIdDTOMapper = getUserByIdDTOMapper;
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/v1/user/{id}")
     public ResponseEntity<Object> handle(@PathVariable(value = "id") Long id) {
         Either<Error, UserEntity> either = getUserByIdUseCase.execute(id);
 
