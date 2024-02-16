@@ -2,6 +2,7 @@ package com.example.cleanarch.infrastructor.controller.user.v1;
 
 import com.example.cleanarch.core.shared.logic.Either;
 import com.example.cleanarch.domain.entity.UserEntity;
+import com.example.cleanarch.domain.exception.UserAlreadyRegisteredError;
 import com.example.cleanarch.domain.usecase.ICreateUserUseCase;
 import com.example.cleanarch.infrastructor.controller.user.v1.mapper.CreateUserDTOMapper;
 import com.example.cleanarch.infrastructor.controller.user.v1.request.CreateUserRequest;
@@ -15,7 +16,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 class CreateUserControllerTest {
 
@@ -46,8 +48,29 @@ class CreateUserControllerTest {
         when(createUserDTOMapper.toResponse(userEntityWithId)).thenReturn(response);
 
         ResponseEntity<Object> result = sut.handle(request);
+
+        verify(createUserDTOMapper, times(1)).toUser(request);
+        verify(createUserDTOMapper, times(1)).toResponse(userEntityWithId);
         assertEquals(result.getStatusCode().value(), 200);
         assertEquals(result.getBody(), response);
+    }
+
+    @Test
+    @DisplayName("should return 400 if the creation of user fails.")
+    void returnBadRequest() {
+        UserEntity userEntity = makeUserEntity(null);
+        UserEntity userEntityWithId = makeUserEntity(1L);
+        CreateUserRequest request = makeRequest();
+        CreateUserResponse response = makeResponse();
+
+        when(createUserDTOMapper.toUser(request)).thenReturn(userEntity);
+        when(createUserUseCase.execute(userEntity)).thenReturn(Either.Left(new UserAlreadyRegisteredError()));
+
+        ResponseEntity<Object> result = sut.handle(request);
+
+        verify(createUserDTOMapper, times(0)).toResponse(userEntityWithId);
+        assertEquals(result.getStatusCode().value(), 400);
+        assertEquals(new UserAlreadyRegisteredError().getMessage(), result.getBody());
     }
 
     UserEntity makeUserEntity(Long id) {
