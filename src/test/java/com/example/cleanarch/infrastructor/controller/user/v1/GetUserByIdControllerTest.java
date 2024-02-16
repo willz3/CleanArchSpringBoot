@@ -2,6 +2,7 @@ package com.example.cleanarch.infrastructor.controller.user.v1;
 
 import com.example.cleanarch.core.shared.logic.Either;
 import com.example.cleanarch.domain.entity.UserEntity;
+import com.example.cleanarch.domain.exception.UserNotFoundError;
 import com.example.cleanarch.domain.usecase.IGetUserByIdUseCase;
 import com.example.cleanarch.infrastructor.controller.user.v1.mapper.GetUserByIdDTOMapper;
 import com.example.cleanarch.infrastructor.controller.user.v1.request.CreateUserRequest;
@@ -49,6 +50,23 @@ class GetUserByIdControllerTest {
         verify(getUserByIdDTOMapper, times(1)).toResponse(userEntityWithId);
         assertEquals(result.getStatusCode().value(), 200);
         assertEquals(result.getBody(), response);
+    }
+
+    @Test
+    @DisplayName("should return 404 if the operation fails.")
+    void returnNotFound() {
+        UserEntity userEntityWithId = makeUserEntity(1L);
+        Long request = makeRequest();
+        GetUserByIdResponse response = makeResponse();
+        UserNotFoundError userNotFoundError = new UserNotFoundError();
+        when(getUserByIdUseCase.execute(request)).thenReturn(Either.Left(userNotFoundError));
+        when(getUserByIdDTOMapper.toResponse(userEntityWithId)).thenReturn(response);
+
+        ResponseEntity<Object> result = sut.handle(request);
+
+        verify(getUserByIdDTOMapper, times(0)).toResponse(userEntityWithId);
+        assertEquals(result.getStatusCode().value(), 404);
+        assertEquals(result.getBody(), userNotFoundError.getMessage());
     }
 
     UserEntity makeUserEntity(Long id) {
