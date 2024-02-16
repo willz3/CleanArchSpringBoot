@@ -46,6 +46,21 @@ class CreateUserUseCaseTest {
         verifyNoInteractions(createUserGateway);
     }
 
+    @Test
+    @DisplayName("should return an user entity if user not exists.")
+    void whenUserNoExists() {
+        UserEntity userEntity = makeUserEntity();
+        UserEntity existingUserEntity = makeExistingUserEntity();
+        when(findUserByEmailGateway.findByEmail(userEntity.getEmail())).thenReturn(null);
+        when(createUserGateway.create(userEntity)).thenReturn(existingUserEntity);
+
+        Either<Error, UserEntity> result = sut.execute(userEntity);
+        assertTrue(result.isRight());
+        assertEquals(result.getRight(), Optional.of(existingUserEntity));
+        verify(findUserByEmailGateway, times(1)).findByEmail(userEntity.getEmail());
+        verify(createUserGateway, times(1)).create(userEntity);
+    }
+
     UserEntity makeUserEntity() {
         return new UserEntity("any_user_name", "password", "email@example.com");
     }
