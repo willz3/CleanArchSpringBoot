@@ -11,6 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import javax.swing.text.html.Option;
+
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
@@ -79,7 +83,19 @@ class UserGatewayTest {
     }
 
     @Test
+    @DisplayName("should find an user by id and return it as entity.")
     void findById() {
+        UserEntity userEntity = makeUserEntity();
+        User user = makeUser();
+
+        when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(user));
+        when(userMapper.toEntity(user)).thenReturn(userEntity);
+
+        UserEntity result = sut.findById(userEntity.getId());
+
+        verify(userMapper, times(1)).toEntity(user);
+        verify(userRepository, times(1)).findById(userEntity.getId());
+        assertEquals(result, userEntity);
     }
 
     UserEntity makeUserEntity() {
